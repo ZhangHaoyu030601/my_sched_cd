@@ -1,4 +1,14 @@
-#define TT_PERIOD       1000 /*us*/
+#pragma once
+#include <stddef.h>
+
+#define TT_PERIOD 1000 /*us*/
+
+struct tt_task_period
+{
+	const char *task_comm;
+	const unsigned int period;
+};
+
 struct tt_task_period task_period_cpu2[4] = {
 	{
 		.task_comm = "Task1",
@@ -16,6 +26,14 @@ struct tt_task_period task_period_cpu2[4] = {
 		.task_comm = "Task4",
 		.period = 18,
 	},
+};
+
+struct sched_tt_slot
+{
+	const char *task_comm;
+	const unsigned int slot_seq;
+	const double start_time;
+	const double stop_time;
 };
 
 struct sched_tt_slot tt_table_cpu2[13] = {
@@ -48,7 +66,7 @@ struct sched_tt_slot tt_table_cpu2[13] = {
 		.slot_seq = 5,
 		.start_time = 12,
 		.stop_time = 13.5,
-        },
+	},
 	{
 		.task_comm = "Task2",
 		.slot_seq = 6,
@@ -99,6 +117,19 @@ struct sched_tt_slot tt_table_cpu2[13] = {
 	},
 };
 
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
+
+struct sched_tt_table
+{
+	const char *task_comm;
+	const unsigned int pinned_cpu;
+	const unsigned int hyper_period;
+	const tt_task_period *task_period;
+	const unsigned int task_num;
+	const sched_tt_slot *slot_table;
+	const unsigned int slot_num;
+};
+
 struct sched_tt_table global_tt_table[4] = {
 	{
 		.pinned_cpu = 0,
@@ -111,8 +142,8 @@ struct sched_tt_table global_tt_table[4] = {
 	{
 		.pinned_cpu = 1,
 		.hyper_period = 0,
-		.task_num = 0,
 		.task_period = NULL,
+		.task_num = 0,
 		.slot_table = NULL,
 		.slot_num = 0,
 	},
